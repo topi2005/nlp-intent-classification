@@ -76,8 +76,6 @@ These were written down after the data checks and before running `baseline.py` o
 
 ## Results
 
-_Not yet run. This table is filled in as experiments complete._
-
 | Model | Test accuracy | Test macro-F1 | Notes |
 |-------|---------------|---------------|-------|
 | TF-IDF + linear SVM | 0.894 | 0.894 | C=3; 5-fold CV macro-F1 0.879 |
