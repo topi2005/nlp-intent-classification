@@ -1,0 +1,25 @@
+# Environments and secrets
+.venv/
+venv/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# Data and large model artifacts (results/ is NOT ignored: it is small and worth committing)
+data/
+models/
+checkpoints/
+*.pt
+*.bin
+*.safetensors
+wandb/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
