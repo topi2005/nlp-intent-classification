@@ -9,7 +9,7 @@ This is a small, rigorous NLP project: public data, a documented evaluation prot
 | Step | What | Status |
 |------|------|--------|
 | 1 | Data loading, data-quality and leakage checks | Done |
-| 2 | TF-IDF + linear SVM baseline | Code written, not yet run |
+| 2 | TF-IDF + linear SVM baseline | Done |
 | 3 | Sentence embeddings + linear classifier | Planned |
 | 4 | Fine-tuned DistilBERT (PyTorch, Hugging Face) | Planned |
 | 5 | Error analysis, learning curve, robustness to typos | Planned |
