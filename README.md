@@ -37,7 +37,7 @@ Observed with `explore.py`:
 
 - **Duplicates in train are dropped.** Only 4, but there is no reason to keep them.
 - **Test queries that also appear in train are removed from the test set,** so the test set is genuinely unseen. This affects 6 distinct queries (about 0.2% of the test set). Scores are therefore not exactly comparable with published Banking77 numbers.
-- **Macro-F1 is the primary metric,** because the classes are imbalanced and accuracy would favour the large ones. Accuracy is reported as well.
+- **Macro-F1 is the primary metric,** because the training classes are imbalanced and per-class behaviour matters. The test set is balanced (40 queries per intent, 3,074 after cleaning), so macro-F1 and accuracy are nearly identical on it; both are reported.
 - Near-duplicate queries (not just exact matches) were **not** checked; this is a known limitation.
 
 ## Evaluation protocol
@@ -80,13 +80,15 @@ _Not yet run. This table is filled in as experiments complete._
 
 | Model | Test accuracy | Test macro-F1 | Notes |
 |-------|---------------|---------------|-------|
-| TF-IDF + linear SVM | | | |
+| TF-IDF + linear SVM | 0.894 | 0.894 | C=3; 5-fold CV macro-F1 0.879 |
 | Sentence embeddings + linear classifier | | | |
 | Fine-tuned DistilBERT | | | |
 
 ### Hypothesis outcomes
 
 _To be completed after the experiments: each hypothesis marked confirmed, partly confirmed or refuted, with the evidence._
+
+**H3 (baseline accuracy): partly confirmed**. Test accuracy was 0.894, inside the predicted 0.85 to 0.92 range. The claim that macro-F1 would be slightly below accuracy was wrong: they are essentially equal (0.8937 vs 0.8936). The test set is balanced, so the two metrics converge; the hypothesis overlooked that the imbalance exists only in the training data.
 
 ## Project structure
 
