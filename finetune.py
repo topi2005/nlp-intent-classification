@@ -46,6 +46,35 @@ def predict(model, loader, device) -> np.ndarray:
     return torch.cat(out).numpy()
 
 
+def fit(model, train_dl, val_dl, val_labels, device, epochs: int):
+    """Train, keep the epoch with the best validation macro-F1, and load those weights
+    back into the model. Returns (best_epoch, best_validation_macro_f1)."""
+    opt = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=0.01)
+    total_steps = len(train_dl) * epochs
+    sched = get_linear_schedule_with_warmup(opt, int(0.1 * total_steps), total_steps)
+
+    best_f1, best_epoch, best_state = -1.0, 0, None
+    for epoch in range(1, epochs + 1):
+        model.train()
+        for batch in train_dl:
+            batch = {k: v.to(device) for k, v in batch.items()}
+            loss = model(**batch).loss
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            opt.step()
+            sched.step()
+            opt.zero_grad()
+        val_f1 = f1_score(val_labels, predict(model, val_dl, device), average="macro")
+        print(f"epoch {epoch}/{epochs}   last-batch loss {loss.item():.3f}   "
+              f"validation macro-F1 {val_f1:.4f}")
+        if val_f1 > best_f1:
+            best_f1, best_epoch = val_f1, epoch
+            best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+
+    model.load_state_dict(best_state)
+    return best_epoch, best_f1
+
+
 def main() -> None:
     set_seed(SEED)
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -63,30 +92,9 @@ def main() -> None:
     val_dl = make_loader(tok, val["text"], val["label"], shuffle=False)
     test_dl = make_loader(tok, test["text"], test["label"], shuffle=False)
 
-    opt = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=0.01)
-    total_steps = len(train_dl) * EPOCHS
-    sched = get_linear_schedule_with_warmup(opt, int(0.1 * total_steps), total_steps)
+    best_epoch, best_f1 = fit(model, train_dl, val_dl, val["label"], device, EPOCHS)
 
-    best_f1, best_epoch, best_state = -1.0, 0, None
-    for epoch in range(1, EPOCHS + 1):
-        model.train()
-        for batch in train_dl:
-            batch = {k: v.to(device) for k, v in batch.items()}
-            loss = model(**batch).loss
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            opt.step()
-            sched.step()
-            opt.zero_grad()
-        val_f1 = f1_score(val["label"], predict(model, val_dl, device), average="macro")
-        print(f"epoch {epoch}/{EPOCHS}   last-batch loss {loss.item():.3f}   "
-              f"validation macro-F1 {val_f1:.4f}")
-        if val_f1 > best_f1:
-            best_f1, best_epoch = val_f1, epoch
-            best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
-
-    # keep the epoch that did best on validation, then evaluate once on the test set
-    model.load_state_dict(best_state)
+    # the epoch that did best on validation is already loaded; evaluate once on the test set
     pred = predict(model, test_dl, device)
     save_results("distilbert", test, pred, names,
                  {"base_model": MODEL, "epochs": EPOCHS, "best_epoch": best_epoch,
