@@ -1,0 +1,13 @@
+{
+  "model": "distilbert",
+  "test_accuracy": 0.9186727391021471,
+  "test_macro_f1": 0.9184504976491423,
+  "n_test": 3074,
+  "base_model": "distilbert-base-uncased",
+  "epochs": 4,
+  "best_epoch": 4,
+  "learning_rate": 5e-05,
+  "max_length": 64,
+  "batch_size": 32,
+  "val_macro_f1": 0.9132368763332289
+}

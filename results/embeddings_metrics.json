@@ -1,0 +1,9 @@
+{
+  "model": "embeddings",
+  "test_accuracy": 0.9255042290175667,
+  "test_macro_f1": 0.9251782062768735,
+  "n_test": 3074,
+  "encoder": "sentence-transformers/all-MiniLM-L6-v2",
+  "best_C": 100,
+  "val_macro_f1": 0.9344008951106015
+}
