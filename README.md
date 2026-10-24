@@ -86,7 +86,10 @@ These were written down after the data checks and before running `baseline.py` o
 
 _To be completed after the experiments: each hypothesis marked confirmed, partly confirmed or refuted, with the evidence._
 
+**H1 (card intents hardest): refuted**. Only 2 of the 10 lowest-F1 intents mention “card” (base rate 27 of 77, so about 3.5 expected). The weakest intents concern transfers, top-ups and identity verification, which have near-synonymous neighbours (pending vs failed vs not received; verify_my_identity vs why_verify_identity vs unable_to_verify_identity).
+**H2 (small classes do worse): not supported**. Classes with fewer than 60 training examples (n=3) had mean recall 0.856 against 0.895 for the rest, but the Spearman correlation between training size and recall is -0.05, and several of the weakest intents have the largest training sets. With 40 test queries per intent, per-class differences are noisy.
 **H3 (baseline accuracy): partly confirmed**. Test accuracy was 0.894, inside the predicted 0.85 to 0.92 range. The claim that macro-F1 would be slightly below accuracy was wrong: they are essentially equal (0.8937 vs 0.8936). The test set is balanced, so the two metrics converge; the hypothesis overlooked that the imbalance exists only in the training data.
+**Post hoc (not pre-registered)**: card_not_working is over-predicted (precision 0.694 against recall 0.85), absorbing queries from card_acceptance and pin_blocked.
 
 ## Project structure
 
