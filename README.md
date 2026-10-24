@@ -10,8 +10,8 @@ This is a small, rigorous NLP project: public data, a documented evaluation prot
 |------|------|--------|
 | 1 | Data loading, data-quality and leakage checks | Done |
 | 2 | TF-IDF + linear SVM baseline | Done |
-| 3 | Sentence embeddings + linear classifier | Planned |
-| 4 | Fine-tuned DistilBERT (PyTorch, Hugging Face) | Planned |
+| 3 | Sentence embeddings + linear classifier | Done |
+| 4 | Fine-tuned DistilBERT (PyTorch, Hugging Face) | Done |
 | 5 | Error analysis, learning curve, robustness to typos | Planned |
 | 6 | Final results and findings | Planned |
 
@@ -94,7 +94,9 @@ _To be completed after the experiments: each hypothesis marked confirmed, partly
 
 **H3 (baseline accuracy): partly confirmed**. Test accuracy was 0.894, inside the predicted 0.85 to 0.92 range. The claim that macro-F1 would be slightly below accuracy was wrong: they are essentially equal (0.8937 vs 0.8936). The test set is balanced, so the two metrics converge; the hypothesis overlooked that the imbalance exists only in the training data.
 
-**H4 (transformer gain): partly refuted**. Fine-tuned DistilBERT improved test macro-F1 over the baseline by 2.5 points (0.8937 to 0.9185), below the predicted 3 to 7. It did not beat the frozen sentence-embedding model (0.9252). Validation macro-F1 was still rising at the final epoch, so DistilBERT may be undertrained.
+**H4 (transformer gain of 3 to 7 points): not supported**. DistilBERT improved test macro-F1 over the baseline by 2.5 points (0.8937 to 0.9185; 95% interval for the accuracy gain +1.3 to +3.6), just below the predicted range. It was statistically indistinguishable from the frozen sentence-embedding model (difference -0.7 points, interval -1.6 to +0.3). Validation macro-F1 was still rising at the final epoch, so DistilBERT may be undertrained.
+
+**Per-intent analysis**. Both models gained most on intents the baseline found hard (8 of the 10 largest gains in each case were among the baseline’s 20 weakest), and 5 of the 10 are shared across models. Part of this is regression to the mean (Spearman correlation between baseline F1 and gain: -0.58 and -0.50). The over-prediction of card_not_working shrank (precision 0.694 to 0.84). Errors inside the identity-verification trio fell from 20 to 6 with embeddings but only to 18 with DistilBERT.
 
 **Post hoc (not pre-registered)**: card_not_working is over-predicted (precision 0.694 against recall 0.85), absorbing queries from card_acceptance and pin_blocked.
 
