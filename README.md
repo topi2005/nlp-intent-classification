@@ -79,8 +79,8 @@ These were written down after the data checks and before running `baseline.py` o
 | Model | Test accuracy | Test macro-F1 | Notes |
 |-------|---------------|---------------|-------|
 | TF-IDF + linear SVM | 0.894 | 0.894 | C=3; 5-fold CV macro-F1 0.879 |
-| Sentence embeddings + linear classifier | | | |
-| Fine-tuned DistilBERT | | | |
+| Sentence embeddings + logistic regression | 0.9255 | 0.9252 | Frozen all-MiniLM-L6-v2 encoder, C=100 chosen on validation split (val macro-F1 0.934), refit on train+val. +3.2 points accuracy over baseline (95% interval +2.2 to +4.2) |
+| Fine-tuned DistilBERT | 0.9187 | 0.9185 | distilbert-base-uncased, 4 epochs, lr 5e-5, batch 32, max length 64, best epoch 4 on validation (val macro-F1 0.913). +2.5 points over baseline (+1.3 to +3.6); not distinguishable from embeddings (-0.7, interval -1.6 to +0.3) |
 
 ### Hypothesis outcomes
 
@@ -91,6 +91,8 @@ _To be completed after the experiments: each hypothesis marked confirmed, partly
 **H2 (small classes do worse): not supported**. Classes with fewer than 60 training examples (n=3) had mean recall 0.856 against 0.895 for the rest, but the Spearman correlation between training size and recall is -0.05, and several of the weakest intents have the largest training sets. With 40 test queries per intent, per-class differences are noisy.
 
 **H3 (baseline accuracy): partly confirmed**. Test accuracy was 0.894, inside the predicted 0.85 to 0.92 range. The claim that macro-F1 would be slightly below accuracy was wrong: they are essentially equal (0.8937 vs 0.8936). The test set is balanced, so the two metrics converge; the hypothesis overlooked that the imbalance exists only in the training data.
+
+**H4 (transformer gain): partly refuted**. Fine-tuned DistilBERT improved test macro-F1 over the baseline by 2.5 points (0.8937 to 0.9185), below the predicted 3 to 7. It did not beat the frozen sentence-embedding model (0.9252). Validation macro-F1 was still rising at the final epoch, so DistilBERT may be undertrained.
 
 **Post hoc (not pre-registered)**: card_not_working is over-predicted (precision 0.694 against recall 0.85), absorbing queries from card_acceptance and pin_blocked.
 
