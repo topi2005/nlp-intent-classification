@@ -1,0 +1,32 @@
+model,text,true,pred,category
+distilbert,Do I need to verify my identity each time I wish to use my account?,why_verify_identity,verify_my_identity,ambiguous
+distilbert,What other methods are there to verify my identity?,why_verify_identity,verify_my_identity,label noise
+distilbert,do I need to verify my identity every time I log into my account?,why_verify_identity,verify_my_identity,ambiguous
+distilbert,what is the identity check?,why_verify_identity,verify_my_identity,ambiguous
+distilbert,What is the point of an identity check?,why_verify_identity,verify_my_identity,model error
+distilbert,When will I get my card?,card_arrival,card_delivery_estimate,label noise
+distilbert,How do I know when my card will arrive?,card_arrival,card_delivery_estimate,ambiguous
+distilbert,Is there a way to know when my card will arrive?,card_arrival,card_delivery_estimate,ambiguous
+distilbert,How long does a card delivery take?,card_arrival,card_delivery_estimate,label noise
+distilbert,how do i get a virtual card for one time use,get_disposable_virtual_card,getting_virtual_card,model error
+distilbert,how does a virtual card work,get_disposable_virtual_card,getting_virtual_card,label noise
+distilbert,I would like a temporary virtual card,get_disposable_virtual_card,getting_virtual_card,model error
+distilbert,Can i get a single use virtual card,get_disposable_virtual_card,getting_virtual_card,model error
+distilbert,When I try and to buy something using my card it keeps getting declined.,declined_transfer,declined_card_payment,label noise
+distilbert,"I was attempting to purchase a golf club off eBay yesterday, but my credit card was declined. I tried multiple times, and again this morning. Can you check into my card please?",declined_transfer,declined_card_payment,label noise
+distilbert,Good morning. I tried to make a purchase with my credit card last night and again this morning. Both times it was declined. Can you investigate?,declined_transfer,declined_card_payment,label noise
+distilbert,My card is being declined online. Could you tell me what might be broken or wrong with the account?,declined_transfer,declined_card_payment,label noise
+distilbert,When will my transfer be available in my account.,balance_not_updated_after_bank_transfer,transfer_timing,label noise
+distilbert,How long until my transfer will be available to me,balance_not_updated_after_bank_transfer,transfer_timing,label noise
+distilbert,How long does it take for an international transfer into my account?,balance_not_updated_after_bank_transfer,transfer_timing,label noise
+distilbert,How long does a UK transfer take?,balance_not_updated_after_bank_transfer,transfer_timing,label noise
+distilbert,Am I able to exchange currencies?,fiat_currency_support,exchange_via_app,label noise
+distilbert,Can I exchange currencies?,fiat_currency_support,exchange_via_app,label noise
+distilbert,How do I change currencies to euros?,fiat_currency_support,exchange_via_app,label noise
+distilbert,I want to make a currency exchange to EU.,fiat_currency_support,exchange_via_app,label noise
+distilbert,My ATM got stuck and I'm not sure what to do.,card_swallowed,declined_cash_withdrawal,too vague
+distilbert,I was taking out funds and was unable to regain my card.,card_swallowed,declined_cash_withdrawal,model error
+distilbert,What should I do with my atm that got stuck?,card_swallowed,declined_cash_withdrawal,ambiguous
+distilbert,Why is my transfer not done yet?,pending_transfer,balance_not_updated_after_bank_transfer,model error
+distilbert,Someone transferred money to me and it doesn't show,pending_transfer,balance_not_updated_after_bank_transfer,label noise
+distilbert,Why is a money transfer not showing?,pending_transfer,balance_not_updated_after_bank_transfer,label noise
