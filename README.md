@@ -13,9 +13,23 @@ This is a small, rigorous NLP project: public data, a documented evaluation prot
 | 3 | Sentence embeddings + linear classifier | Done |
 | 4 | Fine-tuned DistilBERT (PyTorch, Hugging Face) | Done |
 | 5 | Error analysis, learning curve, robustness to typos | Done |
-| 6 | Final results and findings | Planned |
+| 6 | Final results and findings | Done |
 
 The results section below is filled in only as each experiment is actually run.
+
+## Key findings
+
+1. **Pretrained representations beat TF-IDF by a clear margin.** Test accuracy was 0.894 for the TF-IDF + linear SVM baseline, 0.926 for frozen sentence embeddings + logistic regression, and 0.919 for fine-tuned DistilBERT. Both neural models beat the baseline (95% intervals +2.2 to +4.2 and +1.3 to +3.6 points), but they were statistically indistinguishable from each other.
+2. **The advantage is largest when labelled data is scarce.** With 899 training queries, the embeddings model beat the baseline by 16.7 accuracy points; with the full 8,999 the gap shrank to 3.7. DistilBERT was the most data-hungry of the three.
+3. **Typos did not hurt TF-IDF more, contrary to my hypothesis.** The baseline lost the least accuracy at every noise level, and the neural models' lead disappeared at heavy noise. At a realistic 10% typo rate they were still 2 to 3 points ahead.
+4. **Part of the remaining error is label noise, not model weakness.** In a manual review of 31 misclassified queries, I judged 18 as probable label noise and 6 as genuine model errors. For example, every sampled `declined_transfer` query described a declined card payment. The clearest real weakness was missing cues such as "single use" for disposable virtual cards.
+5. **Most of my hypotheses were wrong, and the write-up says so.** Of six hypotheses written before running anything, one was supported, one partly confirmed, and four refuted or unsupported. For example, the weakest intents were transfers, top-ups and identity verification, not card intents.
+
+**Practical takeaway:** on a dataset of this size, frozen embeddings with a logistic regression matched fine-tuning at a fraction of the cost and needed no GPU training.
+
+**Main limitations:** a single seed, no intervals for the learning-curve and typo results, one dataset of short single-intent queries, and an error analysis based on a non-random sample judged by one annotator.
+
+Full results, hypotheses and methods are below.
 
 ## Dataset
 
@@ -66,7 +80,7 @@ These were written down after the data checks and before running `baseline.py` o
 - Classifier: linear SVM (`LinearSVC`). Logistic regression was tried first but was too slow for a cross-validation grid; a linear SVM is the standard fast baseline for text and trains in about a second.
 - Regularisation `C` is chosen from {0.1, 0.3, 1, 3} by macro-F1 under cross-validation on the training set.
 
-### Planned
+### Done
 
 - **Sentence embeddings + linear classifier:** a pretrained sentence encoder turns each query into a vector, with a simple classifier on top.
 - **Fine-tuned DistilBERT:** PyTorch and Hugging Face Transformers, trained on a free Colab GPU, with a short maximum sequence length because queries are short.
@@ -179,10 +193,18 @@ Much of the apparent error in these pairs reflects the label scheme rather than 
 .
 ├── data/
 │   └── raw/               # Banking77 CSVs (gitignored)
-├── results/               # metrics, per-class scores, predictions
+├── results/               # metrics, per-class scores, predictions, curves, plots, error sample
 ├── data.py                # loads Banking77 (local CSVs, else Hugging Face Hub)
 ├── explore.py             # dataset statistics and leakage / quality checks
 ├── baseline.py            # TF-IDF + linear SVM, cross-validated, evaluated once on test
+├── embeddings.py          # frozen sentence embeddings + logistic regression
+├── finetune.py            # DistilBERT fine-tuning (PyTorch / Hugging Face), reusable fit()
+├── report.py              # shared train/validation split and results saving
+├── robustness.py          # learning curve (H5) and typo robustness (H6)
+├── perturb.py             # deterministic typo generator
+├── analyse.py             # per-intent scores and most frequent confusions for one model
+├── compare.py             # paired model comparison and per-intent gains
+├── errors.py              # samples misclassified queries for manual error analysis
 ├── requirements.txt
 └── README.md
 ```
